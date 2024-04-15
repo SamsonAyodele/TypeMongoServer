@@ -2,7 +2,7 @@ import { Response, Request } from "express";
 import { ResponseCode } from "../interfaces/enums/code-enum";
 import { createUser, deleteUserById, getUserByEmail, getUserById, getUsers, IUserModel, updateUserById } from "../models/user-model";
 import utility from "../utils";
-import { Document } from "mongoose";
+// import { Document } from "mongoose";s
 
 interface CustomRequest<T> extends Request {
   body: T;
@@ -43,7 +43,7 @@ class UserController {
 
   async getUserById(req: Request, res: Response) {
     try {
-      let userId = req.body.userId;
+      let userId = req.params.userId;
       const user = await getUserById(userId);
       if (!user) {
         return utility.handleError(res, "User not found", ResponseCode.NOT_FOUND);
@@ -56,12 +56,12 @@ class UserController {
 
   async updateUser(req: Request, res: Response) {
     try {
-      let userId = req.body.userId;
+      let userId = req.params.userId;
       const userExist = await getUserById(userId);
       if (!userExist) {
         return utility.handleError(res, "User not found", ResponseCode.NOT_FOUND);
       } else {
-        const user = await updateUserById(userId, { new: true });
+        const user = await updateUserById(userId,   { $set: req.body});
         return utility.handleSuccess(res, "User updated successfully", { user }, ResponseCode.SUCCESS);
       }
     } catch (error) {
@@ -71,7 +71,7 @@ class UserController {
 
   async deleteUser(req: Request, res: Response) {
     try {
-      let userId = req.body.userId;
+      let userId = req.params.userId;
       const userExist = await getUserById(userId);
       if (!userExist) {
         return utility.handleError(res, "User not found", ResponseCode.NOT_FOUND);

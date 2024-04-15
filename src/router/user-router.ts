@@ -1,15 +1,18 @@
 import express, { Request, Response } from "express";
 import UserController from "../controllers/user-controller";
+import { validator } from "../middleware/index";
+import ValidationSchema from "../validators/user-validator";
+
 
 const router = express.Router()
 const userController = new UserController()
 
 const createUserRoute = ()=>{
-    router.post("/", (req: Request, res: Response) => {
+    router.post("/create-user", (req: Request, res: Response) => {
         return userController.createUser(req, res);
     });
 
-    router.get("/", (req: Request, res: Response)=> {
+    router.get("/get-user", (req: Request, res: Response)=> {
         return userController.getUser(req, res)
     })
 
@@ -24,8 +27,8 @@ const createUserRoute = ()=>{
     router.delete("/:userId", (req: Request, res: Response)=> {
         return userController.deleteUser(req, res)
     })
-    
+
     return router
 }
 
-export default createUserRoute
+export default createUserRoute()
